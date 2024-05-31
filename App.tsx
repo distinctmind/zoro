@@ -50,7 +50,7 @@ export default function App() {
         <SQLiteProvider useSuspense databaseName='zoro.db'>
           <Stack.Navigator>
             <Stack.Screen name='Home' component={Home} options={{
-              headerTitle: "Zoro",
+              headerTitle: "Finances",
               headerLargeTitle: true,
             }} />
           </Stack.Navigator>

@@ -27,6 +27,7 @@ export const categoryEmojies: {[key: string]: string} = {
     Salary: "💰",
     Freelancing: "👨🏻‍💻",
     Utilities: "💡",
+    Drinks: "☕️",
     Electronics: "🖥️",
     "Dining Out": "🍽️",
     "Breakfast Supplies": "🥐",

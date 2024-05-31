@@ -8,6 +8,7 @@ import { Category, Transaction, TransactionsByMonth } from "../types";
 import AddTransaction from "../components/AddTransaction";
 
 export default function Home() {
+    
     const [categories, setCategories] = useState<Category[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [transactionsByMonth, setTransactionsByMonth] = useState<TransactionsByMonth>({totalExpenses: 0, totalIncome: 0});
@@ -54,11 +55,29 @@ export default function Home() {
         });
     }
 
+    async function insertTransaction(transaction: Transaction) {
+        db.withTransactionAsync(async () => {
+          await db.runAsync(
+            `
+            INSERT INTO Transactions (category_id, amount, date, description, type) VALUES (?, ?, ?, ?, ?);
+          `,
+            [
+              transaction.category_id,
+              transaction.amount,
+              transaction.date,
+              transaction.description,
+              transaction.type,
+            ]
+          );
+          await getData();
+        });
+      }
+
     return (
         <ScrollView contentContainerStyle={{ padding: 15, paddingVertical: 170}}>
-            <AddTransaction insertTransaction={null} />
             <TransactionSummary totalExpenses={transactionsByMonth.totalExpenses} totalIncome={transactionsByMonth.totalIncome} />
             <Transactionlist categories={categories} transactions={transactions} deleteTransaction={deleteTransaction} />
+            <AddTransaction insertTransaction={insertTransaction} />
         </ScrollView>
     )
 }
@@ -82,7 +101,7 @@ function TransactionSummary({totalIncome, totalExpenses}: TransactionsByMonth) {
 
     return (
         <Card style={styles.container}>
-            <Text>Summary for {readablePeriod}</Text>
+            <Text style={{fontWeight: "bold", fontSize: 20, marginBottom: 10}}>Summary for {readablePeriod}</Text>
             <Text style={styles.summaryText}>
                 Income: {" "}
                 <Text style={getMoneyTextStyle(totalIncome)}>
